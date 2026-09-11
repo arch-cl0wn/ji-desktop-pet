@@ -1,0 +1,26 @@
+{
+  "name": "ji-desktop-pet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+  "start": "electron .",
+  "build:win": "electron-builder --win --x64"
+},
+"build": {
+  "appId": "com.ji.desktoppet",
+  "productName": "Ji",
+  "win": {
+    "target": "nsis"
+  }
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^44.3.0",
+    "electron-builder": "^26.15.3",
+    "electron-reload": "^2.0.0-alpha.1"
+  }
+}

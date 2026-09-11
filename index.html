@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            overflow: hidden;
+        }
+
+        body {
+            -webkit-app-region: drag;
+        }
+
+        /* =========================
+           JI CANVAS
+           ========================= */
+
+        #stage {
+            position: absolute;
+
+            width: 256px;
+            height: 256px;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+        }
+
+
+        /* =========================
+           MAIN SPRITE
+           ========================= */
+
+        #pet {
+            position: absolute;
+
+            width: 256px;
+            height: 256px;
+
+            left: 0;
+            top: 0;
+
+            image-rendering: pixelated;
+
+            -webkit-user-drag: none;
+            -webkit-app-region: no-drag;
+
+            z-index: 1;
+
+            animation: idleFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes idleFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-2px);
+            }
+        }
+
+        #pet.sleeping {
+            animation: none;
+        }
+
+
+        /* =========================
+           INTERACTION LAYER
+           ========================= */
+
+            #interaction {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 256px;
+    height: 256px;
+
+    z-index: 100;
+
+    -webkit-app-region: no-drag;
+
+    cursor: grab;
+}
+
+#interaction.dragging {
+    cursor: grabbing;
+}
+
+        /* =========================
+           KYAAAA
+           ========================= */
+
+        .kyaaaa-animation {
+            animation: kyaaaaMove 0.4s ease-in-out;
+        }
+
+        @keyframes kyaaaaMove {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+
+        /* =========================
+           REACTION LAYERS
+           ========================= */
+
+        .reaction-layer {
+            position: absolute;
+
+            pointer-events: none;
+
+            image-rendering: pixelated;
+
+            opacity: 0;
+
+            z-index: 10;
+        }
+
+
+        /* =========================
+           BLUSH
+           ========================= */
+
+        #blush {
+            width: 190px;
+            height: auto;
+
+            left: 18%;
+            top: 15%;
+
+            pointer-events: none;
+        }
+
+        #blush.visible {
+            animation: blushPulse 1.8s ease-in-out forwards;
+        }
+
+        @keyframes blushPulse {
+            0% {
+                opacity: 0;
+            }
+
+            30% {
+                opacity: 1;
+            }
+
+            60% {
+                opacity: 0.7;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+
+        /* =========================
+           LOVE HEARTS
+           ========================= */
+
+        .heart {
+            height: auto;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        #heart1 {
+            width: 100px;
+            left: 55%;
+            top: 28%;
+        }
+
+        #heart2 {
+            width: 120px;
+            left: 62%;
+            top: 15%;
+        }
+
+        .heart.visible {
+            animation: heartFloat 1.8s ease-out forwards;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            70% {
+                opacity: 1;
+                transform: translateY(-8px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+        }
+
+
+        /* =========================
+           SLEEP Zs
+           ========================= */
+
+        .sleep-z {
+            position: absolute;
+
+            width: 100px;
+            height: auto;
+
+            left: 58%;
+            top: 35%;
+
+            opacity: 0;
+
+            image-rendering: pixelated;
+
+            pointer-events: none;
+
+            z-index: 5;
+        }
+
+        #z1.visible {
+            animation: zFloat 3s linear infinite;
+        }
+
+        #z2.visible {
+            animation: zFloat 3s linear infinite;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes zFloat {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+
+            15% {
+                opacity: 1;
+            }
+
+            75% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(55px, -95px);
+                opacity: 0;
+            }
+        }
+
+            /* =========================
+   CHAT BUBBLE
+   ========================= */
+
+#chat-bubble {
+    position: absolute;
+
+    width: 95px;
+    height: 105px;
+
+    left: 190px;
+    top: -15px;
+
+    opacity: 0;
+
+    image-rendering: pixelated;
+
+    pointer-events: none;
+
+    z-index: 20;
+}
+
+#chat-text {
+    position: absolute;
+
+    width: 200px;
+    height: 40px;
+
+    left: 136px;
+    top: 8px;
+
+    color: #000;
+
+    font-family: system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+
+    line-height: 1.2;
+    text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 21;
+}
+
+#chat-bubble.show,
+#chat-text.show {
+    opacity: 1;
+}
+    </style>
+</head>
+
+<body>
+
+    <div id="stage">
+
+        <!-- Chat bubble -->
+<img
+    id="chat-bubble"
+    src="assets/chat-bubble.png"
+>
+
+<div id="chat-text">
+    wassup<br>
+    bbg &gt;:3
+</div>
+
+        <!-- Ji -->
+        <img
+            id="pet"
+            src="assets/pet.png"
+        >
+        
+
+        <!-- Visual effects -->
+        <img
+            id="blush"
+            class="reaction-layer"
+            src="assets/blush.png"
+        >
+
+        <img
+            id="heart1"
+            class="reaction-layer heart"
+            src="assets/love-heart-1.png"
+        >
+
+        <img
+            id="heart2"
+            class="reaction-layer heart"
+            src="assets/love-heart-2.png"
+        >
+
+        <img
+            id="z1"
+            class="sleep-z"
+            src="assets/z1.png"
+        >
+
+        <img
+            id="z2"
+            class="sleep-z"
+            src="assets/z2.png"
+        >
+
+        <!-- ONE fixed interaction area -->
+        <div id="interaction"></div>
+
+    </div>
+
+<script>
+    /* =================================
+       ELEMENTS
+       ================================= */
+
+    const chatBubble =
+        document.getElementById("chat-bubble");
+
+    const chatText =
+        document.getElementById("chat-text");
+
+    const pet =
+        document.getElementById("pet");
+
+    const blush =
+        document.getElementById("blush");
+
+    const heart1 =
+        document.getElementById("heart1");
+
+    const heart2 =
+        document.getElementById("heart2");
+
+    const z1 =
+        document.getElementById("z1");
+
+    const z2 =
+        document.getElementById("z2");
+
+    const interaction =
+        document.getElementById("interaction");
+
+
+    /* =================================
+       MESSAGES
+       ================================= */
+
+    const messages = [
+        "haiiii :3",
+        "wassup<br>bbg &gt;:3",
+        ":cat_curious:",
+        "mrrp",
+        "whatchu <br>doinggg",
+        "you forgor <br>me rite TwT",
+        "FAGGOT.",
+        "look at me <br>rn ig &gt;:3",
+        "hehe :3",
+        "drink wota",
+    ];
+
+
+    /* =================================
+       STATE
+       ================================= */
+
+    let currentlySleeping = false;
+    let scheduledSleeping = false;
+    let manuallyAwake = false;
+    let currentState = "normal";
+
+    let clickTimer = null;
+
+    let messageTimer = null;
+
+    let hasSaidHello = false;
+
+
+    /* =================================
+       CHAT
+       ================================= */
+
+    function playClink() {
+    const ctx = new AudioContext();
+
+    const now = ctx.currentTime;
+
+    // First tone
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+
+    osc1.type = "sine";
+    osc1.frequency.setValueAtTime(850, now);
+
+    gain1.gain.setValueAtTime(0.12, now);
+    gain1.gain.exponentialRampToValueAtTime(
+        0.001,
+        now + 0.12
+    );
+
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+
+    osc1.start(now);
+    osc1.stop(now + 0.12);
+
+
+    // Second, slightly higher tone
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(1200, now + 0.08);
+
+    gain2.gain.setValueAtTime(0.001, now);
+    gain2.gain.setValueAtTime(0.09, now + 0.08);
+    gain2.gain.exponentialRampToValueAtTime(
+        0.001,
+        now + 0.22
+    );
+
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+
+    osc2.start(now + 0.08);
+    osc2.stop(now + 0.22);
+}
+
+    function showMessage(message, delay = 0) {
+
+        setTimeout(() => {
+
+            chatText.innerHTML = message;
+
+            chatBubble.classList.remove("show");
+            chatText.classList.remove("show");
+
+            void chatBubble.offsetWidth;
+            void chatText.offsetWidth;
+
+            chatBubble.classList.add("show");
+            chatText.classList.add("show");
+
+            playClink();
+
+            setTimeout(() => {
+
+                chatBubble.classList.remove("show");
+                chatText.classList.remove("show");
+
+            }, 3000);
+
+        }, delay);
+    }
+
+
+    function sayHello() {
+        showMessage(
+            "wassup<br>bbg &gt;:3",
+            1000
+        );
+    }
+
+
+    function sayRandomThing() {
+
+        if (currentlySleeping) {
+            return;
+        }
+
+        const message =
+            messages[
+                Math.floor(
+                    Math.random() * messages.length
+                )
+            ];
+
+        showMessage(message);
+    }
+
+
+    function scheduleNextMessage() {
+
+        if (currentlySleeping) {
+            return;
+        }
+
+        if (messageTimer !== null) {
+            return;
+        }
+
+        const delay =
+            (5 + Math.random() * 10) * 60 * 1000;
+
+        messageTimer = setTimeout(() => {
+
+            messageTimer = null;
+
+            if (currentlySleeping) {
+                return;
+            }
+
+            sayRandomThing();
+
+            scheduleNextMessage();
+
+        }, delay);
+    }
+
+
+    /* =================================
+       SLEEP STATE
+       ================================= */
+
+    function setSleeping(sleeping) {
+
+        currentlySleeping = sleeping;
+
+
+        if (sleeping) {
+
+            currentState = "sleep";
+
+            /* Cancel pending random message */
+            if (messageTimer !== null) {
+                clearTimeout(messageTimer);
+                messageTimer = null;
+            }
+
+            pet.src =
+                "assets/sleep.png";
+
+            pet.classList.add(
+                "sleeping"
+            );
+
+            z1.classList.add(
+                "visible"
+            );
+
+            z2.classList.add(
+                "visible"
+            );
+
+        } else {
+
+            currentState = "normal";
+
+            pet.src =
+                "assets/pet.png";
+
+            pet.classList.remove(
+                "sleeping"
+            );
+
+            z1.classList.remove(
+                "visible"
+            );
+
+            z2.classList.remove(
+                "visible"
+            );
+
+            /*
+             * Start random thoughts after wake.
+             */
+            scheduleNextMessage();
+        }
+    }
+
+
+    /* =================================
+       CLOCK STATE FROM ELECTRON
+       ================================= */
+
+    window.ji.onSleepStateChange(
+        (sleeping) => {
+
+            scheduledSleeping = sleeping;
+
+
+            if (
+                sleeping &&
+                !manuallyAwake
+            ) {
+
+                hasSaidHello = false;
+
+                setSleeping(true);
+
+            } else if (!sleeping) {
+
+                const wasSleeping =
+                    currentlySleeping;
+
+                manuallyAwake = false;
+
+                setSleeping(false);
+
+
+                /*
+                 * Natural wake:
+                 * say hello once.
+                 */
+
+                if (wasSleeping) {
+
+                    hasSaidHello = true;
+
+                    sayHello();
+                }
+
+
+                /*
+                 * App starts during awake hours:
+                 * also say hello.
+                 */
+
+                else if (!hasSaidHello) {
+
+                    hasSaidHello = true;
+
+                    sayHello();
+                }
+            }
+        }
+    );
+
+
+    /* =================================
+       KYAAAA
+       ================================= */
+
+    function doKyaaaa() {
+
+        if (currentlySleeping) {
+            return;
+        }
+
+        currentState = "kyaaaa";
+
+        pet.src =
+            "assets/kyaaaa.png";
+
+        pet.classList.remove(
+            "kyaaaa-animation"
+        );
+
+        void pet.offsetWidth;
+
+        pet.classList.add(
+            "kyaaaa-animation"
+        );
+
+
+        /* Blush */
+
+        blush.classList.remove(
+            "visible"
+        );
+
+        void blush.offsetWidth;
+
+        blush.classList.add(
+            "visible"
+        );
+
+
+        /* Return */
+
+        setTimeout(() => {
+
+            if (
+                currentState !== "kyaaaa"
+            ) {
+                return;
+            }
+
+            currentState = "normal";
+
+            pet.src =
+                "assets/pet.png";
+
+            pet.classList.remove(
+                "kyaaaa-animation"
+            );
+
+            blush.classList.remove(
+                "visible"
+            );
+
+        }, 1800);
+    }
+
+
+    /* =================================
+       LOVE LOVE
+       ================================= */
+
+    function doLove() {
+
+        if (currentlySleeping) {
+            return;
+        }
+
+        currentState = "love";
+
+
+        /* Ear flick 1 */
+
+        pet.src =
+            "assets/love-ear-down.png";
+
+        setTimeout(() => {
+
+            if (currentState !== "love") {
+                return;
+            }
+
+            pet.src =
+                "assets/love-ear-up.png";
+
+        }, 150);
+
+        setTimeout(() => {
+
+            if (currentState !== "love") {
+                return;
+            }
+
+            pet.src =
+                "assets/love-ear-down.png";
+
+        }, 300);
+
+
+        /* Ear flick 2 */
+
+        setTimeout(() => {
+
+            if (currentState !== "love") {
+                return;
+            }
+
+            pet.src =
+                "assets/love-ear-up.png";
+
+        }, 450);
+
+        setTimeout(() => {
+
+            if (currentState !== "love") {
+                return;
+            }
+
+            pet.src =
+                "assets/love-ear-down.png";
+
+        }, 600);
+
+
+        /* Ear flick 3 */
+
+        setTimeout(() => {
+
+            if (currentState !== "love") {
+                return;
+            }
+
+            pet.src =
+                "assets/love-ear-up.png";
+
+        }, 750);
+
+        setTimeout(() => {
+
+            if (currentState !== "love") {
+                return;
+            }
+
+            pet.src =
+                "assets/love-ear-down.png";
+
+        }, 900);
+
+
+        /* Heart 1 */
+
+        setTimeout(() => {
+
+            if (currentState !== "love") {
+                return;
+            }
+
+            heart1.classList.remove(
+                "visible"
+            );
+
+            void heart1.offsetWidth;
+
+            heart1.classList.add(
+                "visible"
+            );
+
+        }, 250);
+
+
+        /* Heart 2 */
+
+        setTimeout(() => {
+
+            if (currentState !== "love") {
+                return;
+            }
+
+            heart2.classList.remove(
+                "visible"
+            );
+
+            void heart2.offsetWidth;
+
+            heart2.classList.add(
+                "visible"
+            );
+
+        }, 700);
+
+
+        /* Return */
+
+        setTimeout(() => {
+
+            if (currentState !== "love") {
+                return;
+            }
+
+            currentState = "normal";
+
+            pet.src =
+                "assets/pet.png";
+
+            heart1.classList.remove(
+                "visible"
+            );
+
+            heart2.classList.remove(
+                "visible"
+            );
+
+        }, 2600);
+    }
+
+
+    /* =================================
+       CLICK + DRAG
+       ================================= */
+
+    let isDragging = false;
+
+    let hasMoved = false;
+
+    let dragStartX = 0;
+    let dragStartY = 0;
+
+    let windowStartX = 0;
+    let windowStartY = 0;
+
+
+    /* Mouse down */
+
+    interaction.addEventListener(
+        "mousedown",
+        (event) => {
+
+            if (event.button !== 0) {
+                return;
+            }
+
+            isDragging = true;
+
+            hasMoved = false;
+
+            dragStartX =
+                event.screenX;
+
+            dragStartY =
+                event.screenY;
+
+            windowStartX =
+                window.screenX;
+
+            windowStartY =
+                window.screenY;
+
+            interaction.classList.add(
+                "dragging"
+            );
+        }
+    );
+
+
+    /* Mouse movement */
+
+    window.addEventListener(
+        "mousemove",
+        (event) => {
+
+            if (!isDragging) {
+                return;
+            }
+
+            const deltaX =
+                event.screenX -
+                dragStartX;
+
+            const deltaY =
+                event.screenY -
+                dragStartY;
+
+
+            if (
+                Math.abs(deltaX) > 3 ||
+                Math.abs(deltaY) > 3
+            ) {
+
+                hasMoved = true;
+            }
+
+
+            if (hasMoved) {
+
+                window.ji.moveWindow(
+                    windowStartX + deltaX,
+                    windowStartY + deltaY
+                );
+            }
+        }
+    );
+
+
+    /* Mouse up */
+
+    window.addEventListener(
+        "mouseup",
+        (event) => {
+
+            if (!isDragging) {
+                return;
+            }
+
+            isDragging = false;
+
+            interaction.classList.remove(
+                "dragging"
+            );
+
+
+            /*
+             * No movement =
+             * treat as click.
+             */
+
+            if (!hasMoved) {
+
+                if (clickTimer) {
+                    clearTimeout(clickTimer);
+                }
+
+                clickTimer =
+                    setTimeout(() => {
+
+                        if (currentlySleeping) {
+                            clickTimer = null;
+                            return;
+                        }
+
+                        const rect =
+                            interaction.getBoundingClientRect();
+
+                        const y =
+                            event.clientY -
+                            rect.top;
+
+                        const relativeY =
+                            y / rect.height;
+
+
+                        /*
+                         * Upper 42% = LOVE
+                         * Lower 58% = KYAAAA
+                         */
+
+                        if (
+                            relativeY < 0.42
+                        ) {
+
+                            doLove();
+
+                        } else {
+
+                            doKyaaaa();
+                        }
+
+
+                        clickTimer = null;
+
+                    }, 250);
+            }
+        }
+    );
+
+
+    /* =================================
+       DOUBLE CLICK
+       ================================= */
+
+    interaction.addEventListener(
+        "dblclick",
+        (event) => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+
+            if (clickTimer) {
+
+                clearTimeout(clickTimer);
+
+                clickTimer = null;
+            }
+
+
+            /* Sleeping → wake */
+
+            if (currentlySleeping) {
+
+                manuallyAwake = true;
+
+                setSleeping(false);
+
+                sayHello();
+
+                return;
+            }
+
+
+            /* Awake during scheduled sleep
+               → sleep again */
+
+            if (
+                scheduledSleeping &&
+                manuallyAwake
+            ) {
+
+                manuallyAwake = false;
+
+                setSleeping(true);
+            }
+        }
+    );
+
+</script>
+    
+
+</body>
+</html>
